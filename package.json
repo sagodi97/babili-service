@@ -1,0 +1,32 @@
+{
+  "name": "babili-service",
+  "version": "0.0.1",
+  "description": "Basic chat app running on Node and Websockets (socket.io)",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon --experimental-modules --es-module-specifier-resolution=node .",
+    "prod": "NODE_ENV=production node --experimental-modules --es-module-specifier-resolution=node .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sagodi97/babili-service.git"
+  },
+  "author": "Santiago Gonzalez",
+  "bugs": {
+    "url": "https://github.com/sagodi97/babili-service/issues"
+  },
+  "homepage": "https://github.com/sagodi97/babili-service#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "socket.io": "^4.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.24.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1"
+  }
+}
