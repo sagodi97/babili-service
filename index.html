@@ -5,14 +5,16 @@
     <style>
       body {
         padding: 1rem 5rem;
+        width: 90vw;
+        height: 90vh;
       }
       #chat-container {
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-        width: 400px;
-        height: 80vh;
         overflow-y: auto;
+        height: 90%;
+        width: 400px;
       }
       .chat-bubble {
         max-width: 255px;
@@ -86,7 +88,7 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <body>
-    <h2>WebSocket Test</h2>
+    <h2>Babili, ĉar ni babilas</h2>
     <div id="chat-container"></div>
 
     <form id="form">
@@ -94,14 +96,15 @@
     </form>
     <script>
       var socket = io();
+      let uid = Math.floor(Math.random() * 99999);
 
       var form = document.getElementById("form");
       var input = document.getElementById("input");
       var chat = document.getElementById("chat-container");
       const chatBubble = (msg) => {
         const bubble = document.createElement("div");
-        bubble.className = "chat-bubble mine";
-        bubble.innerHTML = msg;
+        bubble.className = `chat-bubble ${msg.uid == uid ? "mine" : "theirs"}`;
+        bubble.innerHTML = msg.text;
         return bubble;
       };
 
@@ -112,7 +115,7 @@
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         if (input.value) {
-          socket.emit("chat message", input.value);
+          socket.emit("chat message", { uid, text: input.value });
           input.value = "";
         }
       });
