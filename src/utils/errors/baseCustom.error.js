@@ -3,7 +3,7 @@ class BaseCustomError extends Error {
     if (typeof errorOrMessage === 'string') {
       super(errorOrMessage);
     } else {
-      super(errorOrMessage.message);
+      super(errorOrMessage?.message ?? '');
     }
   }
 }

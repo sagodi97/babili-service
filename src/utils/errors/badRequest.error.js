@@ -1,10 +1,10 @@
 import BaseCustomError from './baseCustom.error';
 
-class UnprocessableEntityError extends BaseCustomError {
+class BadRequestError extends BaseCustomError {
   constructor(payload) {
     super(payload);
-    this.name = 'UnprocessableEntityError';
-    this.statusCode = 422;
+    this.name = 'BadRequestError';
+    this.statusCode = 400;
   }
 }
-export default UnprocessableEntityError;
+export default BadRequestError;
