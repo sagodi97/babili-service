@@ -1,34 +1,24 @@
+import UnprocessableEntityError from '../utils/errors/badRequest.error';
+import NotFoundError from '../utils/errors/notFoundError';
+
 const users = [];
 
-export const getUsers = (req, res) => res.json(users);
+export const getUsers = () => users;
 
-export const getUserById = (req, res) => {
-  const { id } = req.params;
-  const foundUser = users.find((user) => user.username === id);
-  if (foundUser) {
-    res.json(foundUser);
-  } else {
-    res.status(404).end();
-  }
-};
+export const getUserById = (id) => users.find((user) => user.username === id) ?? null;
 
-export const createUser = (req, res) => {
-  const { body: newUser } = req;
+export const createUser = (newUser) => {
   const foundUser = users.find((user) => user.username === newUser.username);
   if (foundUser) {
-    res.status(400).json({ msg: 'username is already taken!' });
-  } else {
-    users.push(newUser);
-    res.status(201).json({ msg: `User with username: ${newUser.username} was created!` });
-  }
+    throw new UnprocessableEntityError(`Username ${foundUser.username} already exists`);
+  } else users.push(newUser);
 };
 
-export const deleteUserById = (req, res) => {
-  const userToDeleteIndex = users.findIndex((user) => user.username === req.params.id);
+export const deleteUserById = (id) => {
+  const userToDeleteIndex = users.findIndex((user) => user.username === id);
   if (userToDeleteIndex !== -1) {
     users.splice(userToDeleteIndex, 1);
-    res.json({ msg: `User ${req.params.id} was deleted :(` });
   } else {
-    res.status(400).json({ msg: `User ${req.params.id} does not exist` });
+    throw new NotFoundError();
   }
 };

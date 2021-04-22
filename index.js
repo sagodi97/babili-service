@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import socket from './src/socket';
 import userController from './src/controllers/user.controller';
+import errorHandler from './src/middleware/errorHandler.middleware';
 
 dotenv.config();
 
@@ -18,6 +19,10 @@ socket(server);
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
+// Routes
 app.use('/users', userController);
+
+// Errors middleware
+app.use(errorHandler);
 
 server.listen(PORT);
