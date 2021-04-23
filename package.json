@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --experimental-modules --es-module-specifier-resolution=node .",
+    "dev": "nodemon --trace-warnings --experimental-modules --es-module-specifier-resolution=node . | pino-colada",
     "prod": "NODE_ENV=production node --experimental-modules --es-module-specifier-resolution=node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -22,11 +22,16 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-pino-logger": "^6.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.6.6",
+    "pino": "^6.11.3",
     "socket.io": "^4.0.1"
   },
   "devDependencies": {
     "eslint": "^7.24.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.22.1"
+    "eslint-plugin-import": "^2.22.1",
+    "pino-colada": "^2.1.0"
   }
 }

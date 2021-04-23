@@ -1,28 +1,42 @@
+import './readEnv';
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
-import dotenv from 'dotenv';
+import expressPino from 'express-pino-logger';
 import socket from './src/socket';
-import userController from './src/controllers/user.controller';
+import logger from './src/utils/logger';
 import errorHandler from './src/middleware/errorHandler.middleware';
+import db from './src/db';
 
-dotenv.config();
+const expressLogger = expressPino({ logger });
 
 const PORT = process.env.PORT || 3000;
 
-// Server setup
-const app = express();
-const server = http.createServer(app);
-// Attach socket to server
-socket(server);
-// Middleware
-app.use(cors());
-app.use(express.json({ limit: '10mb' }));
+const init = async () => {
+  // DB setup
+  await db.connect();
+  const { default: userController } = await import('./src/controllers/user.controller');
+  // Server setup
+  const app = express();
+  const server = http.createServer(app);
 
-// Routes
-app.use('/users', userController);
+  // Attach socket to server
+  socket(server);
 
-// Errors middleware
-app.use(errorHandler);
+  // Middleware
+  app.use(expressLogger);
+  app.use(cors());
+  app.use(express.json({ limit: '10mb' }));
 
-server.listen(PORT);
+  // Routes
+  app.use('/users', userController);
+
+  // Errors middleware
+  app.use(errorHandler);
+
+  server.listen(PORT, () => {
+    logger.info(`Server live on ${PORT}`);
+  });
+};
+
+init();
