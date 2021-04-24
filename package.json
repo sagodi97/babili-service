@@ -26,7 +26,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.6",
     "pino": "^6.11.3",
-    "socket.io": "^4.0.1"
+    "socket.io": "^4.0.1",
+    "validatorjs": "^3.22.1"
   },
   "devDependencies": {
     "eslint": "^7.24.0",
