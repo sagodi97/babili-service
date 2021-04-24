@@ -1,39 +1,42 @@
 import express from 'express';
 import {
-  createUser, getUsers, deleteUserById, getUserById,
+  createUser, getUsers, getUserById,
 } from '../services/user.service';
 
 const userController = express.Router();
 
-userController.get('/', (req, res) => {
+userController.get('/', async (req, res, next) => {
   try {
-    const users = getUsers();
+    const users = await getUsers();
     res.json(users);
   } catch (error) {
-    res.status(500).json({ msg: error.message ?? 'An error has occurred' });
+    next(error);
   }
 });
 
-userController.get('/:id', (req, res) => {
+userController.get('/:id', async (req, res, next) => {
   try {
     const { id } = req.params;
-    const userById = getUserById(id);
-    if (userById) res.json(userById);
-    else res.status(404).end();
+    const userById = await getUserById(id);
+    res.json(userById);
   } catch (error) {
-    res.status(500).json({ msg: error.message ?? 'An error has occurred' });
+    next(error);
   }
 });
 
-userController.post('/', (req, res) => {
-  const { body: newUser } = req;
-  createUser(newUser);
-  res.status(201).json({ msg: `User with username: ${newUser.username} was created!` });
+userController.post('/', async (req, res, next) => {
+  try {
+    const { body: newUser } = req;
+    await createUser(newUser);
+    res.status(201).json({ msg: `User with username: ${newUser.username} was created!` });
+  } catch (error) {
+    next(error);
+  }
 });
-
+// TODO: implement
 userController.delete('/:id', (req, res) => {
   const { id } = req.params;
-  deleteUserById(id);
+  // deleteUserById(id);
   res.json({ msg: `User ${id} was deleted` });
 });
 

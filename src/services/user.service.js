@@ -1,24 +1,28 @@
+import * as userDao from '../dao/user.dao';
 import UnprocessableEntityError from '../utils/errors/badRequest.error';
 import NotFoundError from '../utils/errors/notFoundError';
+import validateUserSchema from '../schemas/user.schema';
 
-const users = [];
+export const getUsers = () => userDao.getAll();
 
-export const getUsers = () => users;
-
-export const getUserById = (id) => users.find((user) => user.username === id) ?? null;
-
-export const createUser = (newUser) => {
-  const foundUser = users.find((user) => user.username === newUser.username);
-  if (foundUser) {
-    throw new UnprocessableEntityError(`Username ${foundUser.username} already exists`);
-  } else users.push(newUser);
+export const getUserById = async (id) => {
+  const user = await userDao.getById(id);
+  if (!user) {
+    throw new NotFoundError();
+  } else {
+    return user;
+  }
 };
 
-export const deleteUserById = (id) => {
-  const userToDeleteIndex = users.findIndex((user) => user.username === id);
-  if (userToDeleteIndex !== -1) {
-    users.splice(userToDeleteIndex, 1);
+export const createUser = async (newUser) => {
+  validateUserSchema(newUser);
+  const usernameExists = await userDao.usernameExists(newUser.username);
+  const emailExists = await userDao.usernameExists(newUser.email);
+  if (usernameExists) {
+    throw new UnprocessableEntityError(`Username ${newUser.username} already exists`);
+  } else if (emailExists) {
+    throw new UnprocessableEntityError(`The provided email address ${newUser.email} is already in use`);
   } else {
-    throw new NotFoundError();
+    return userDao.create(newUser);
   }
 };
