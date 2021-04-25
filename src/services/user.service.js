@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import * as userDao from '../dao/user.dao';
 import UnprocessableEntityError from '../utils/errors/badRequest.error';
 import NotFoundError from '../utils/errors/notFoundError';
@@ -14,16 +15,18 @@ export const getUserById = async (id) => {
   }
 };
 
-export const createUser = async (newUser) => {
-  validateUserSchema(newUser);
-  const usernameExists = await userDao.usernameExists(newUser.username);
-  const emailExists = await userDao.usernameExists(newUser.email);
+export const createUser = async (user) => {
+  validateUserSchema(user);
+  const usernameExists = await userDao.usernameExists(user.username);
+  const emailExists = await userDao.usernameExists(user.email);
   if (usernameExists) {
-    throw new UnprocessableEntityError(`Username ${newUser.username} already exists`);
+    throw new UnprocessableEntityError(`Username ${user.username} already exists`);
   } else if (emailExists) {
-    throw new UnprocessableEntityError(`The provided email address ${newUser.email} is already in use`);
+    throw new UnprocessableEntityError(`The provided email address ${user.email} is already in use`);
   } else {
-    return (await userDao.create(newUser)).ops[0];
+    const hash = await bcrypt.hash(user.password, 10);
+    const newUser = await userDao.create({ ...user, password: hash });
+    return newUser.ops[0];
   }
 };
 

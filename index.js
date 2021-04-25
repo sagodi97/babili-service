@@ -16,6 +16,8 @@ const init = async () => {
   // DB setup
   await db.connect();
   const { default: userController } = await import('./src/controllers/user.controller');
+  const { default: authController } = await import('./src/controllers/auth.controller');
+
   // Server setup
   const app = express();
   const server = http.createServer(app);
@@ -30,6 +32,7 @@ const init = async () => {
 
   // Routes
   app.use('/users', userController);
+  app.use('/auth', authController);
 
   // Errors middleware
   app.use(errorHandler);

@@ -1,9 +1,12 @@
 import express from 'express';
+import authMiddleware from '../middleware/auth.middleware';
 import {
   createUser, getUsers, getUserById, deleteUserById,
 } from '../services/user.service';
 
 const userController = express.Router();
+
+userController.use(authMiddleware);
 
 userController.get('/', async (req, res, next) => {
   try {
