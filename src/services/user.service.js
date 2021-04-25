@@ -3,7 +3,7 @@ import UnprocessableEntityError from '../utils/errors/badRequest.error';
 import NotFoundError from '../utils/errors/notFoundError';
 import validateUserSchema from '../schemas/user.schema';
 
-export const getUsers = () => userDao.getAll();
+export const getUsers = async () => userDao.getAll();
 
 export const getUserById = async (id) => {
   const user = await userDao.getById(id);
@@ -23,6 +23,13 @@ export const createUser = async (newUser) => {
   } else if (emailExists) {
     throw new UnprocessableEntityError(`The provided email address ${newUser.email} is already in use`);
   } else {
-    return userDao.create(newUser);
+    return (await userDao.create(newUser)).ops[0];
+  }
+};
+
+export const deleteUserById = async (id) => {
+  const deleteOp = await userDao.deleteById(id);
+  if (deleteOp.deletedCount === 0) {
+    throw new NotFoundError();
   }
 };

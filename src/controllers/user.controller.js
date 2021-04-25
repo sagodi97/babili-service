@@ -1,6 +1,6 @@
 import express from 'express';
 import {
-  createUser, getUsers, getUserById,
+  createUser, getUsers, getUserById, deleteUserById,
 } from '../services/user.service';
 
 const userController = express.Router();
@@ -27,17 +27,21 @@ userController.get('/:id', async (req, res, next) => {
 userController.post('/', async (req, res, next) => {
   try {
     const { body: newUser } = req;
-    await createUser(newUser);
-    res.status(201).json({ msg: `User with username: ${newUser.username} was created!` });
+    const userCreated = await createUser(newUser);
+    res.status(201).json(userCreated);
   } catch (error) {
     next(error);
   }
 });
 // TODO: implement
-userController.delete('/:id', (req, res) => {
-  const { id } = req.params;
-  // deleteUserById(id);
-  res.json({ msg: `User ${id} was deleted` });
+userController.delete('/:id', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    await deleteUserById(id);
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default userController;
