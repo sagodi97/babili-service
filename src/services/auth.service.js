@@ -15,7 +15,8 @@ export const authenticate = async (creds) => {
     const { JWT_SECRET } = process.env;
     const matchingPassword = await bcrypt.compare(password, user.password);
     if (matchingPassword) {
-      return jwt.sign({ sub: user.id }, JWT_SECRET);
+      // eslint-disable-next-line no-underscore-dangle
+      return jwt.sign({ sub: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
     }
     throw new UnauthorizedError();
   }

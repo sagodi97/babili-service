@@ -26,7 +26,7 @@ export const createUser = async (user) => {
   } else {
     const hash = await bcrypt.hash(user.password, 10);
     const newUser = await userDao.create({ ...user, password: hash });
-    return newUser.ops[0];
+    return newUser;
   }
 };
 

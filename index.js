@@ -3,7 +3,6 @@ import express from 'express';
 import http from 'http';
 import cors from 'cors';
 import expressPino from 'express-pino-logger';
-import socket from './src/socket';
 import logger from './src/utils/logger';
 import errorHandler from './src/middleware/errorHandler.middleware';
 import db from './src/db';
@@ -22,12 +21,14 @@ const init = async () => {
   const app = express();
   const server = http.createServer(app);
 
-  // Attach socket to server
+  // Setup socket instance an attach it to the server
+  const { default: socket } = await import('./src/socket');
+
   socket(server);
 
   // Middleware
   app.use(expressLogger);
-  app.use(cors());
+  app.use(cors({ origin: '*' }));
   app.use(express.json({ limit: '10mb' }));
 
   // Routes
